@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+{% load static %}
+<scrip xmlns="http://www.w3.org/1999/html"></scrip>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/foot.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/bundle.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/master.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/28.css">
+    <script  src="{% static 'js/jquery.js' %}"></script>
+    <meta name="referrer" content="no-referrer" />
+    <script src="{% static 'js/douban.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.raty.js' %}"></script>
+
+
+
+
+</head>
+<body>
+
+    <div class="header_con">
+    <div class="header">
+        <div class="welcome fl">欢迎来到重理工图书馆</div>
+        <div class="fr">
+            <div class="login_btn fl">
+                {% if request.session.user.islogin %}
+                欢迎您：<em>{{ request.session.user.username }}</em>
+                <span>|</span>
+                <a href="{% url 'user:logout' %}">退出</a>
+                {% else %}
+                <a href="{% url 'user:login' %}">登录</a>
+                <span>|</span>
+                <a href="{% url 'user:register' %}">注册</a>
+                {% endif %}
+            </div>
+            <div class="user_link fl">
+                <span>|</span>
+                <a href="{% url 'user:personalinfo' %}">用户中心</a>
+                <span>|</span>
+                <a href="{% url 'index:showcart' %}">我的书单</a>
+                <span>|</span>
+                <a href="#">借阅历史</a>
+            </div>
+        </div>
+    </div>
+</div>
+     <div class="search_bar clearfix">
+		<a href="{% url 'index:index' %}" class="logo fl"><img src="https://tuibook.com/wp-content/uploads/2019/04/2019042922110096.png"></a>
+		<div class="search_con fl">
+			<input type="text" class="input_text fl" name="" placeholder="搜索图书">
+			<input type="button" class="input_btn fr" name="" value="搜索">
+		</div>
+		<div class="guest_cart fr">
+			<a href="{% url 'index:showcart' %}" class="cart_name fl">我的书单</a>
+			<div class="goods_count fl" id="show_count">0</div>
+		</div>
+	</div>
+
+<div class="article">
+  <div id="subject_list">
+
+
+
+
+  <div class="clearfix">
+    <span class="rr greyinput">
+
+          综合排序
+          &nbsp;/&nbsp;
+
+          <a href="/tag/%E5%B0%8F%E8%AF%B4?type=R">按出版日期排序</a>
+          &nbsp;/&nbsp;
+
+          <a href="/tag/%E5%B0%8F%E8%AF%B4?type=S">按评价排序</a>
+    </span>
+  </div>
+
+  <ul class="subject-list">
+    {% for book in books %}
+  <li class="subject-item">
+    <div class="pic">
+      <a class="nbg" href="{% url 'index:detail' %}?bid={{ book.bid }}" onclick="">
+        <img class="" src="{{ book.bimg}}" width="90">
+      </a>
+    </div>
+    <div class="info">
+      <h2 class="">
+
+  <a href="{% url 'index:detail' %}?bid={{ book.bid }}" title="{{ book.bname }}" onclick="">
+      {{ book.bname }}
+  </a>
+      </h2>
+      <div class="pub">
+          {{ book.bpublisher }} / {{ book.btime }} / {{ book.bprice }}
+      </div>
+  <div class="star clearfix">
+        <span class="rating_nums">{{ book.bstar }}</span>
+    <span class="pl">
+        ({{ book.bnum }}人评价)
+    </span>
+  </div>
+
+    <p>{{ book.bdesc }}</p>
+
+      <div class="ft">
+  <div class="collect-info">
+  </div>
+
+
+
+
+      </div>
+
+    </div>
+  </li>
+
+    {% endfor %}
+  </ul>
+
+
+
+        <div class="paginator">
+        {% if books.has_previous %}
+    {#    如果存在上一页点击'<'可以跳转到上一页#}
+    <a href="{% url 'index:sortall' %}?sid={{ sid }}&page={{ books.previous_page_number }}" aria-label="Previous">
+        <span aria-hidden="true">上一页</span>
+    </a>
+    {% endif %}
+
+            {% for page in books.paginator.page_range %}
+    {% if pid == books.number %}
+        <a href="">{{ page }}</a>
+        {% else %}
+        <a href="{% url 'index:sortall' %}?sid={{ sid }}&page={{ page }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+
+        {% if books.has_next %}
+        <a href="{% url 'index:sortall' %}?sid={{ sid }}&page={{ books.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">下一页</span>
+        </a>
+        {% endif %}
+
+        </div>
+
+
+  </div>
+</div>
+
+
+</body>
+
+</html>

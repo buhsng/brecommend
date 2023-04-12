@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>个人信息</title>
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/base_1.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/foot.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/personalinfo.css">
+    <script type="text/javascript" src="{% static 'js/jquery-3.3.1.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/ie6.js'%}"></script>
+
+
+</head>
+<body>
+<div class="header_con">
+    <div class="header">
+        <div class="welcome fl">欢迎来到重理工图书馆</div>
+        <div class="fr">
+            <div class="login_btn fl">
+                {% if request.session.user.islogin %}
+                欢迎您：<em>{{ request.session.user.username }}</em>
+                <span>|</span>
+                <a href="{% url 'user:logout' %}">退出</a>
+                {% else %}
+                <a href="{% url 'user:login' %}">登录</a>
+                <span>|</span>
+                <a href="{% url 'user:register' %}">注册</a>
+                {% endif %}
+            </div>
+            <div class="user_link fl">
+                <span>|</span>
+                <a href="{% url 'user:personalinfo' %}">用户中心</a>
+                <span>|</span>
+                <a href="{% url 'index:showcart' %}">我的书单</a>
+                <span>|</span>
+                <a href="#">借阅历史</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="mydang">
+        <div class="head">
+            <a class="logo" href="{% url 'index:index' %}">
+                <img src="https://tuibook.com/wp-content/uploads/2019/04/2019042922110096.png" alt="">
+            </a>
+        </div>
+        <div class="my_left">
+            <div class="my_menu">
+                <h3 class="my_menu_title">
+                    <a href="#" id="J_myhomeBtn">我的推书</a>
+                </h3>
+                <dl>
+                    <dt id="class600" name="orders">我的交易</dt>
+                    <dd>
+                        <a href="#">借阅历史</a>
+                    </dd>
+                    <dt id="class640" name="personalinformation">个人中心</dt>
+                    <dd>
+                        <a href="{% url 'user:personalinfo' %}" id="a_personal">个人信息</a>
+                    </dd>
+                    <dd>
+                        <a href="{% url 'user:eidtpwd' %}" id="a_eidpwd">修改密码</a>
+                    </dd>
+                    <dd>
+                        <a href="{% url 'user:address' %}" id="a_adress">收货地址</a>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <div class="my_main">
+            <div class="my_title">
+                <span class="title">个人信息</span>
+            </div>
+            <div class="address_list">
+                <dl>
+                    <dt>当前信息：</dt>
+                    <dd>用户名：&nbsp;&nbsp; {{ request.session.user.username }}</dd>
+                    <dd>邮&nbsp;&nbsp;箱：&nbsp;&nbsp; {{ request.session.user.email }}</dd>
+                    <dd>手机号：&nbsp;&nbsp; {{ request.session.user.phone }}</dd>
+                </dl>
+            </div>
+        </div>
+         <div class="footer_nav_box">
+            <div class="footer_nav">
+            <a href="#" target="_blank" rel="nofollow">公司简介</a>
+            <span class="sep">|</span>
+            <a href="#" target="_blank">诚聘英才</a>
+            <span class="sep">|</span>
+            <a href="#" target="_blank">手机推书</a>
+            <span class="sep">|</span>
+            <a href="#" target="_blank">网站联盟</a>
+            <span class="sep">|</span>
+            <a href="#" target="_blank">官方Blog</a>
+        </div>
+             <div class="footer_copyright">
+            <span>Copyright (C) 重理工图书馆 2004-2017, All Rights Reserved</span>
+        </div>
+        <div class="clear"></div>
+    </div>
+    </div>
+</body>
+</html>
