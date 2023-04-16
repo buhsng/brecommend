@@ -29,11 +29,12 @@ def index(request):
     #
     book6s = Book.objects.filter(sid=6).order_by("bnum").defer("bdesc")[a:b]
 
-    bookrecs = Book.objects.order_by("bnum").defer("bdesc")[0:15]
+    #猜你喜欢
+    bookrecs = Book.objects.order_by("bnum").defer("bdesc")[0:50]#销量前50
     if userinfo['islogin']:
         uid = userinfo['uid']
         user_com = Comment.objects.filter(uid=uid).first()
-        if user_com != None:
+        if user_com != None:# 根据用户历史评价推荐
             bookid_rec = recommend_user(uid)
             print("\n")
             print("根据相似度计算推荐给用户的图书为：")
@@ -44,6 +45,10 @@ def index(request):
 
             bookrecs = bookrecs[a:b]
         else:
+            user = User.objects.filter(uid=userinfo['uid'])[0]
+            if len(user.favor)>0:# 用户无历史评价，根据用户注册时选择的喜好推荐
+                category = list(map(lambda x:int(x), user.favor))
+                bookrecs = Book.objects.filter(sid__in=category).order_by("bnum").defer("bdesc")# 用户喜好分类的书籍按照销量排序
             bookrecs = bookrecs[a:b]
     else:
         bookrecs = bookrecs[a:b]

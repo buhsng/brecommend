@@ -7,8 +7,9 @@
     <link rel="stylesheet" type="text/css" href="/static/css/base.css">
     <link rel="stylesheet" type="text/css" href="/static/css/foot.css">
     <link rel="stylesheet" type="text/css" href="/static/css/register.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/favor.css">
     <script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/register.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/favor.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/foot.css">
     <script src="{% static 'js/html5.js' %}"></script>
     <title>注册 -- 重理工图书馆</title>
@@ -25,97 +26,31 @@
         <div class="ddnewcarthead_bottom"></div>
     </div>
 </div>
-<form id='reFrom' action="{% url 'user:register' %}" method="post">
+<form id='favorFrom' action="{% url 'user:favor' %}" method="post">
     {% csrf_token %}
-    <div id="bd">
-        <div class="shadow_box">
-            <div class="register_box">
-                <div class="head">
-                        <span class="dd_more">
-                            <a class="home" href="{% url 'index:index' %}">网站首页</a>
-                        </span>
-                    <a class="head_a" href="#">新用户注册</a>
+    <div class="check-card">
+        <div style="width: 100%;padding-bottom: 10px;font-size: 20px;">
+            偏好设置
+        </div>
+        {% for item in category %}
+        <div class="check-card-item">
+            <input type="checkbox" id="check{{ item.idx }}" name="check{{ item.idx }}" value="{{item.idx+1}}">
+            <label for="check{{ item.idx }}" class="radio"></label>
+            <div class="check-card-bg"></div>
+            <div class="check-card-body">
+                <div class="check-card-toggle">
+                    <span></span>
+                    <span></span>
                 </div>
-                <div class="body">
-                    <div id="J_cheatProofTop" class="new_tip" style="display: block">
-                        <div>贴心提示：请勿设置与邮箱密码相同的账户登录密码或支付密码，防止不法分子窃取您的重理工图书馆账户信息，<a href="#">谨慎诈骗</a></div>
-
-                    </div>
-                    <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                        <tbody>
-                        <tr>
-                            <td class="t">用户名</td>
-                            <td class="z_index2">
-                                <input name="txt_username" id="txt_username" autocomplete="off" maxlength="40"
-                                       tabindex="1" value="" placeholder="请输入您的用户名" type="text" class="text">
-                                <span id="J_tipUsername" class="cue warn"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="t">手机号</td>
-                            <td class="z_index2">
-                                <input name="txt_phone" id="txt_phone" autocomplete="off" maxlength="40"
-                                       tabindex="1" value="" placeholder="请输入您的手机号码" type="text" class="text">
-                                <span id="J_tipPhone" class="cue warn"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="t">性别</td>
-                            <td class="z_index2">
-                                <label>
-                                <select name="select_sex" title="请选择">
-                                    <option value="1" title="男">男</option>
-                                    <option value="2" title="女">女</option>
-                                    <option value="3" title="保密">保密</option>
-                                </select>
-                                </label>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td class="t">登录密码</td>
-                            <td class="z_index2">
-                                <input name="txt_password" id="txt_password" type="password" autocomplete="off"
-                                       maxlength="40" tabindex="1" value="" placeholder="请输入您的登录密码" type="text"
-                                       class="text">
-                                <span id="J_tipPassword" class="cue warn"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="t">确认密码</td>
-                            <td class="z_index2">
-                                <input name="txt_check_password" id="txt_check_password" type="password"
-                                       autocomplete="off" maxlength="40" tabindex="1" value="" placeholder="请再次确认你的密码"
-                                       type="text" class="text">
-                                <span id="J_tipSurePassword" class="cue warn"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="t">邮 箱</td>
-                            <td class="z_index2">
-                                <input name="txt_email" id="txt_email" autocomplete="off" maxlength="40" tabindex="1"
-                                       value="" placeholder="请输入你的邮箱" type="text" class="text">
-                                <span id="J_tipEmail" class="cue warn"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="t"></td>
-                            <td class="clause">
-                                    <span class="float_l">
-                                         <input id="chb_agreement" name="chb_agreement" type="checkbox" tabindex="7"
-                                                checked="checked">
-                                            我已阅读并同意《协议》
-                                    </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="t"></td>
-                            <td><input id="J_submitRegister" class="btn_login" type="button" value="立即注册"></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <div class="check-card-body-in">
+                    <h3 class="check-card-title">{{item.text}}</h3>
                 </div>
+                <div class="check-card-cancel">✖</div>
             </div>
+        </div>
+        {% endfor %}
+        <div class="submit">
+            <input id="submit_favor" class="btn_submit" type="button" value="选好了">
         </div>
     </div>
 </form>

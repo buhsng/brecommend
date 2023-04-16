@@ -12,6 +12,18 @@ class User(models.Model):
     upsw = models.CharField(max_length=300, blank=True, null=True)  # 密码
     uphone = models.CharField(max_length=20, blank=True, null=True)  # 手机号
     uadmin = models.IntegerField(blank=True, null=True)  # 是否管理员
+    ufavorCode = models.CharField(max_length=20, blank=True, null=True)
+    
+    @property
+    def favor(self):
+        if self.ufavorCode and type(self.ufavorCode)==str:
+            return self.ufavorCode.split(",")
+        else:
+            return []
+    
+    @favor.setter
+    def favor(self, favorCodeList):
+        self.ufavorCode = ",".join(favorCodeList)
 
     @property
     def password(self):
@@ -63,19 +75,3 @@ class Editpwd(models.Model):
     class Meta:
         managed = False
         db_table = 'editpwd'
-
-class Favor(models.Model):
-    uid = models.ForeignKey('User', models.DO_NOTHING, db_column='uid', primary_key=True)  # 用户id
-    favorCode = models.CharField(max_length=20, blank=True, null=True)
-    
-    @property
-    def favor(self):
-        return self.favorCode.split(",")
-    
-    @favor.setter
-    def favor(self, favorCodeList):
-        self.favorCode = ",".join(favorCodeList)
-        
-    class Meta:
-        managed = False
-        db_table = 'favor'

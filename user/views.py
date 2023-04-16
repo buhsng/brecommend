@@ -32,6 +32,26 @@ def login_required(f):
             return HttpResponseRedirect('/user/login/')
         return f(request, *args, **kwargs)
     return decorated_function
+
+@login_required
+def favor(request):
+    if (request.method == 'POST'):
+        thisuser = UserMethod(request)
+        favorCodes=[]
+        for key in request.POST:
+            if key.startswith('check'):
+                favorCodes.append(request.POST[key])
+        user = User.objects.filter(uid=thisuser.uinfo['uid'])[0]
+        user.favor = favorCodes
+        user.save()
+        return HttpResponseRedirect('/index/')
+    else:
+        ls=["小说","历史","文学","日本","外国文学","中国"]
+        cat = {
+            "category":[{"idx":idx, "text":text} for idx, text in enumerate(ls)]
+        }
+        return render(request, 'favor.html',cat)
+
 # 登陆
 def login(request):
     if (request.method == 'POST'):
@@ -68,7 +88,11 @@ def login(request):
                                            'uid':thisuser.first().uid,
                                            }
                 request.session.set_expiry(1200)
-                return HttpResponseRedirect("/index/")
+                user = User.objects.filter(uid=thisuser.first().uid)[0]
+                if user.favor==[]:
+                    return HttpResponseRedirect("/user/favor")
+                else:
+                    return HttpResponseRedirect("/index/")
             else:
                 # 密码错误
                 context = {'error_name': 0, 'error_pwd': 1, 'username': username, 'password': password}
@@ -79,7 +103,11 @@ def login(request):
         userinfo = this_user.getUserInfo()
 
         if userinfo['islogin']:
-            return HttpResponseRedirect("/index/")
+            user = User.objects.filter(uid=userinfo['uid'])[0]
+            if user.favor==[]:
+                return HttpResponseRedirect("/user/favor")
+            else:
+                return HttpResponseRedirect("/user/favor")
         else:
             return render(request, 'login.html')
 
