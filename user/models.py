@@ -63,3 +63,19 @@ class Editpwd(models.Model):
     class Meta:
         managed = False
         db_table = 'editpwd'
+
+class Favor(models.Model):
+    uid = models.ForeignKey('User', models.DO_NOTHING, db_column='uid', primary_key=True)  # 用户id
+    favorCode = models.CharField(max_length=20, blank=True, null=True)
+    
+    @property
+    def favor(self):
+        return self.favorCode.split(",")
+    
+    @favor.setter
+    def favor(self, favorCodeList):
+        self.favorCode = ",".join(favorCodeList)
+        
+    class Meta:
+        managed = False
+        db_table = 'favor'

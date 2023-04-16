@@ -1,7 +1,7 @@
 import random
 from django.shortcuts import render,redirect,HttpResponse
 from user.user_method import UserMethod
-from .models import Book,Sort,Comment,Cart,PayCart,Author
+from .models import Book,Sort,Comment,Cart,PayCart,Author,MyOrder
 from user.views import login_required,random_id
 from user.models import User
 from django.http import  HttpResponseRedirect,JsonResponse
@@ -99,6 +99,9 @@ def bookdetail(request):
     stars_2 = list(reversed(stars_1))
 
     books = Book.objects.filter(sid=book.sid)[0:3]
+    bought = False
+    if userinfo:
+        bought = MyOrder.objects.filter(user_id=userinfo["uid"], book_id=bid).exists()
     data={
         'userinfo':userinfo,
         'book':book,
@@ -108,7 +111,8 @@ def bookdetail(request):
         'books':books,
         'comments':comments,
         'uname':unames_2,
-        'star':stars_2
+        'star':stars_2,
+        "bought":bought,
     }
     return render(request,"detail.html",data)
 
@@ -231,16 +235,11 @@ def cash_payment(request):
                 cartpay = PayCart(cart_id=newcart.cid)
                 cartpay.save()
         allcart = Cart.objects.filter(user_id=userinfo_id).all()
-        this_address = Address.objects.filter(uid=userinfo_id).first()
-        clist = PayCart.objects.filter().all()
-
-        data = {
-            'userinfo':userinfo,
-            'allcart':allcart,
-            'curaddress':this_address.getFullAddress(),
-            'Clists':clist
-        }
-    return render(request,'pay.html',data)
+        for item in allcart:
+            order = MyOrder(user_id=userinfo_id,book_id=item.book.bid,allprice=item.book.bprice)
+            order.save()
+        allcart.delete()
+    return HttpResponseRedirect("/index/showcart")
 
 # 评论
 @login_required

@@ -171,7 +171,6 @@
 			            </div>
                        <div class="total">总价：<em class="price{{  book.bid  }} " id="zongjia" >{{ price }}</em> <em>元</em></div>
                         <div class="operate_btn" data-actions-icnt="">
-				            <a href="#" class="buy_btn">立即购买</a>
 				            <a href="{% url 'index:addtocart' %}"  class="add_cart" id="add_cart">加入书单<i class="cart"></i></a>
 			            </div>
                       </div>
@@ -224,6 +223,7 @@
                         </div>
                     </div>
                     {% endfor %}
+                {% if request.session.user.islogin and bought %}
                 <form class="ui reply form" method="POST" action="#">
                     {% csrf_token %}
                             <select class="form-control" id="stars"  name="stars">
@@ -239,13 +239,9 @@
 
                          </div>
 
-
-                    {% if request.session.user.islogin %}
                          <input type="submit" class="ui button" onclick="comments({{ book.bid }})" value="发送">
-                    {% else %}
-                        <input type="submit" class="disabled ui button" value="请登录">
-                    {% endif %}
                 </form>
+                {% endif %}
                 </div>
             </div>
             </div>

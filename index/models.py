@@ -83,8 +83,8 @@ class User(models.Model):
 class Cart(models.Model):
     db_table = 'cart'
     cid = models.AutoField(primary_key=True)          # id
-    user = models.ForeignKey(User,related_name='user_cat',on_delete=models.CASCADE)  # 外键 用户
-    book = models.ForeignKey(Book,related_name='book_cat',on_delete=models.CASCADE)     # 外键 商品
+    user = models.ForeignKey(User,related_name='user_cat', on_delete=models.CASCADE)  # 外键 用户
+    book = models.ForeignKey(Book,related_name='book_cat', on_delete=models.CASCADE)     # 外键 商品
     pnum = models.IntegerField()                         # 数量
     sumprice = models.CharField(max_length=64)           # 总价格
                                                             #时间
@@ -94,16 +94,16 @@ class Cart(models.Model):
 class PayCart(models.Model):
     db_table = 'paycart'
     id = models.AutoField(primary_key=True)          # id
-    cart = models.ForeignKey(Cart,related_name='carttopay',on_delete=models.CASCADE)  # 外键 用户
+    cart = models.ForeignKey(Cart,related_name='carttopay', on_delete=models.CASCADE)  # 外键 用户
 
 # 订单
-class myorder(models.Model):
+class MyOrder(models.Model):
     order_id = models.AutoField(primary_key=True)  # 订单id
-    ordernum = models.CharField(max_length=32)  # 订单编号
     user = models.ForeignKey(User, related_name='user_order', on_delete=models.CASCADE)  # 外键
     book = models.ForeignKey(Book, related_name='book_order', on_delete=models.CASCADE)  # 外键 商品
-    allprice = models.FloatField()  # 商品总价
-    allpnum = models.IntegerField()  # 总数量
+    allprice = models.FloatField()  # 总价
     paydate = models.DateTimeField  # 日期
-    address = models.CharField(max_length=255)  # 收货地址
     db_table = 'myorder'
+    
+    class Meta:
+        db_table = 'index_myorder'
