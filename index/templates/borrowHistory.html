@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% load static %}
+<scrip xmlns="http://www.w3.org/1999/html"></scrip>
+<meta charset="UTF-8">
+<title>Title</title>
+<link rel="stylesheet" type="text/css" href="/static/css/main.css">
+<link rel="stylesheet" type="text/css" href="/static/css/foot.css">
+<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+<link rel="stylesheet" type="text/css" href="/static/css/bundle.css">
+<link rel="stylesheet" type="text/css" href="/static/css/init.css">
+<link rel="stylesheet" type="text/css" href="/static/css/master.css">
+<link rel="stylesheet" type="text/css" href="/static/css/borrowHistory.css">
+<link rel="stylesheet" type="text/css" href="/static/css/28.css">
+<script src="{% static 'js/jquery.js' %}"></script>
+<meta name="referrer" content="no-referrer" />
+<script src="{% static 'js/douban.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.raty.js' %}"></script>
+
+
+
+
+</head>
+
+<body>
+
+    <div class="header_con">
+        <div class="header">
+            <div class="welcome fl">欢迎来到重理工图书馆</div>
+            <div class="fr">
+                <div class="login_btn fl">
+                    {% if request.session.user.islogin %}
+                    欢迎您：<em>{{ request.session.user.username }}</em>
+                    <span>|</span>
+                    <a href="{% url 'user:logout' %}">退出</a>
+                    {% else %}
+                    <a href="{% url 'user:login' %}">登录</a>
+                    <span>|</span>
+                    <a href="{% url 'user:register' %}">注册</a>
+                    {% endif %}
+                </div>
+                <div class="user_link fl">
+                    <span>|</span>
+                    <a href="{% url 'user:personalinfo' %}">用户中心</a>
+                    <span>|</span>
+                    <a href="{% url 'index:showcart' %}">我的书单</a>
+                    <span>|</span>
+                    <a href="{% url 'index:borrowed' %}"">借阅历史</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="subject-list-container">
+        <div class="subject-list">
+            {% for order in orders %}
+            <div class="subject-item">
+                <div class="pic">
+                    <a class="nbg" href="{% url 'index:detail' %}?bid={{ order.book.bid }}" onclick="">
+                        <img class="" src="{{ order.book.bimg}}" width="90">
+                    </a>
+                </div>
+                <div class="info">
+                    <div style="display: flex; flex-wrap: nowrap;">
+                        <div>
+                            <h2 class="">
+                                <a href="{% url 'index:detail' %}?bid={{ order.book.bid }}" title="{{ order.book.bname }}" onclick="">
+                                    {{ order.book.bname }}
+                                </a>
+                            </h2>
+                            <div class="pub">
+                                {{ order.book.bpublisher }} / {{ order.book.btime }} / {{ order.book.bprice }}
+                            </div>
+                            <div class="star clearfix">
+                                <span class="rating_nums">{{ order.book.bstar }}</span>
+                                <span class="pl">
+                                    ({{ order.book.bnum }}人评价)
+                                </span>
+                            </div>
+                        </div>
+                        <div style="margin-left: 30px;">
+                            <div style="font-size: 16px;">实付款: {{order.allprice}} 元</div>
+                            <div style="font-size: 16px;">借阅时间: {{order.paydate}}</div>
+                        </div>
+                    </div>
+                    <p>{{ order.book.bdesc }}</p>
+                    <div class="ft">
+                        <div class="collect-info">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

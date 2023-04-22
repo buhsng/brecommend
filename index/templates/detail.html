@@ -1,147 +1,150 @@
 <!DOCTYPE html>
 {% load static %}
 <scrip xmlns="http://www.w3.org/1999/html"></scrip>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/detail.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/foot.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/foot.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/dangdang.css">
+<meta charset="UTF-8">
+<title>Title</title>
+<link rel="stylesheet" type="text/css" href="/static/css/main.css">
+<link rel="stylesheet" type="text/css" href="/static/css/detail.css">
+<link rel="stylesheet" type="text/css" href="/static/css/foot.css">
+<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+<link rel="stylesheet" type="text/css" href="/static/css/foot.css">
+<link rel="stylesheet" type="text/css" href="/static/css/dangdang.css">
 
-    <link rel="stylesheet" type="text/css" href="/static/css/comments.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/jquery.raty.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
-    <script  src="{% static 'js/jquery.js' %}"></script>
-    <script type="text/JavaScript" src="{% static 'js/detail.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/test.js' %}"></script>
-    <script type="text/javascript"   src="{% static 'js/common.js' %}"></script>
-    <script src="{% static 'js/douban.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery.raty.js' %}"></script>
-    <meta name="referrer" content="no-referrer" />
-    {#    无法加载网络图片时使用上面这段代码#}
+<link rel="stylesheet" type="text/css" href="/static/css/comments.css">
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.raty.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+<script src="{% static 'js/jquery.js' %}"></script>
+<script type="text/JavaScript" src="{% static 'js/detail.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/test.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+<script src="{% static 'js/douban.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.raty.js' %}"></script>
+<meta name="referrer" content="no-referrer" />
+{# 无法加载网络图片时使用上面这段代码#}
 <script>
     function comments(book_id) {
-           var cookieop = new cookieOperate();
-           var csrf = cookieop.getCookie('csrftoken');
-           var comment = $('textarea').val();
-           var myselect = document.getElementById("stars");
-           var index = myselect.selectedIndex;
-           var star_select = myselect.options[index].value
-           console.log(star_select)
-           $.ajax({
-                    url: '/index/comment/',
-                    type: 'POST',
-                     data: {'id': book_id,
-                            'comment':comment,
-                            'comment_star':star_select
-                     },
+        var cookieop = new cookieOperate();
+        var csrf = cookieop.getCookie('csrftoken');
+        var comment = $('textarea').val();
+        var myselect = document.getElementById("stars");
+        var index = myselect.selectedIndex;
+        var star_select = myselect.options[index].value
+        console.log(star_select)
+        $.ajax({
+            url: '/index/comment/',
+            type: 'POST',
+            data: {
+                'id': book_id,
+                'comment': comment,
+                'comment_star': star_select
+            },
 
-                     beforeSend: function (request) {
-                            request.setRequestHeader("X-CSRFToken", csrf);
-                        },
-                     success: function (data) {
-                       window.location = window.location;
-                   },
-                    error:function (data) {
-                      alert("评论失败")
-                    }
-                 });
-
+            beforeSend: function (request) {
+                request.setRequestHeader("X-CSRFToken", csrf);
+            },
+            success: function (data) {
+                window.location = window.location;
+            },
+            error: function (data) {
+                alert("评论失败")
             }
+        });
+
+    }
 </script>
 
 <script type="text/javascript">
-	$(function(){
-		$("#starts").raty({
-			number : 5,//星星个数
-			path : 'images',//图片路径
-			starOn : 'star-on.png',
-			starOff : 'star-off.png',
-			target : '#title',//
-			hints : ['1','2','3','4','5'],
-			click : function(score, evt) {
-				$("#grade").val(score);//
-			}
-		});
-	});
+    $(function () {
+        $("#starts").raty({
+            number: 5,//星星个数
+            path: 'images',//图片路径
+            starOn: 'star-on.png',
+            starOff: 'star-off.png',
+            target: '#title',//
+            hints: ['1', '2', '3', '4', '5'],
+            click: function (score, evt) {
+                $("#grade").val(score);//
+            }
+        });
+    });
 </script>
 
 
 </head>
+
 <body>
 
     <div class="header_con">
-    <div class="header">
-        <div class="welcome fl">欢迎来到重理工图书馆</div>
-        <div class="fr">
-            <div class="login_btn fl">
-                {% if request.session.user.islogin %}
-                欢迎您：<em>{{ request.session.user.username }}</em>
-                <span>|</span>
-                <a href="{% url 'user:logout' %}">退出</a>
-                {% else %}
-                <a href="{% url 'user:login' %}">登录</a>
-                <span>|</span>
-                <a href="{% url 'user:register' %}">注册</a>
-                {% endif %}
-            </div>
-            <div class="user_link fl">
-                <span>|</span>
-                <a href="{% url 'user:personalinfo' %}">用户中心</a>
-                <span>|</span>
-                <a href="{% url 'index:showcart' %}">我的书单</a>
-                <span>|</span>
-                <a href="#">借阅历史</a>
+        <div class="header">
+            <div class="welcome fl">欢迎来到重理工图书馆</div>
+            <div class="fr">
+                <div class="login_btn fl">
+                    {% if request.session.user.islogin %}
+                    欢迎您：<em>{{ request.session.user.username }}</em>
+                    <span>|</span>
+                    <a href="{% url 'user:logout' %}">退出</a>
+                    {% else %}
+                    <a href="{% url 'user:login' %}">登录</a>
+                    <span>|</span>
+                    <a href="{% url 'user:register' %}">注册</a>
+                    {% endif %}
+                </div>
+                <div class="user_link fl">
+                    <span>|</span>
+                    <a href="{% url 'user:personalinfo' %}">用户中心</a>
+                    <span>|</span>
+                    <a href="{% url 'index:showcart' %}">我的书单</a>
+                    <span>|</span>
+                    <a href="{% url 'index:borrowed' %}">借阅历史</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-     <div class="search_bar clearfix">
-		<a href="{% url 'index:index' %}" class="logo fl"><img src="https://tuibook.com/wp-content/uploads/2019/04/2019042922110096.png"></a>
-		<div class="search_con fl">
-			<input type="text" class="input_text fl" name="" placeholder="搜索图书">
-			<input type="button" class="input_btn fr" name="" value="搜索">
-		</div>
-		<div class="guest_cart fr">
-			<a href="{% url 'index:showcart' %}" class="cart_name fl">我的书单</a>
-			<div class="goods_count fl" id="show_count">0</div>
-		</div>
-	</div>
+    <div class="search_bar clearfix">
+        <a href="{% url 'index:index' %}" class="logo fl"><img
+                src="https://tuibook.com/wp-content/uploads/2019/04/2019042922110096.png"></a>
+        <div class="search_con fl">
+            <input type="text" class="input_text fl" name="" placeholder="搜索图书">
+            <input type="button" class="input_btn fr" name="" value="搜索">
+        </div>
+        <div class="guest_cart fr">
+            <a href="{% url 'index:showcart' %}" class="cart_name fl">我的书单</a>
+            <div class="goods_count fl" id="show_count">0</div>
+        </div>
+    </div>
 
 
-     <div class="navbar_con">
-		<div class="navbar">
-			<h1 class="fl">全部图书分类</h1>
+    <div class="navbar_con">
+        <div class="navbar">
+            <h1 class="fl">全部图书分类</h1>
             <span></span>
 
 
-		</div>
-	</div>
-     <div class="breadcrumb">
-		<a href="#">全部分类</a>
-		<span>></span>
-		<a href="#">{{ sort.sname }}</a>
-		<span>></span>
-		<span>图书详情</span>
-	</div>
+        </div>
+    </div>
+    <div class="breadcrumb">
+        <a href="#">全部分类</a>
+        <span>></span>
+        <a href="#">{{ sort.sname }}</a>
+        <span>></span>
+        <span>图书详情</span>
+    </div>
     <div class="goods_detail_con clearfix">
-       <!--产品简介-->
+        <!--产品简介-->
         <div id="product_intro">
             <div id="preview">
                 <p id="medimImgContainer">
                     {% with imgl=book.bimg %}
-                          <img id="mediumImg" src="{{ imgl }}"/>
+                    <img id="mediumImg" src="{{ imgl }}" />
                     {% endwith %}
                     <span id="mask"></span><!--小黄块-->
                     <span id="maskTop"></span><!--悬于图片/mask上方的专用于接收鼠标移动事件的一个完全透明的层-->
-                     <span id="largeImgContainer">
-                        <img id="loading" src="{% static 'images/loading.gif' %}"/>
-                        <img id="largeImg"/>
-                     </span>
-                  </p>
-                 <h1>
+                    <span id="largeImgContainer">
+                        <img id="loading" src="{% static 'images/loading.gif' %}" />
+                        <img id="largeImg" />
+                    </span>
+                </p>
+                <h1>
                     <a class="backward_disabled"></a>
                     <a class="forward_disabled"></a>
                     <div>
@@ -149,133 +152,136 @@
 
                         </ul>
                     </div>
-                 </h1>
+                </h1>
             </div>
             <form method="post" action="#">
                 {% csrf_token %}
-             	<div class="goods_detail_list fr">
+                <div class="goods_detail_list fr">
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                       <input type="hidden" name="pid[]" value="{{ book.bid }}">
-                    <h3>{{ book.bname }}</h3>
+                    <input type="hidden" name="pid[]" value="{{ book.bid }}">
+                    <h2>{{ book.bname }}</h2>
+                    <a href="{% url 'index:authordetail' %}?aid={{ book.aid.aid }}">作者： {{book.aid.aname}}</a>
                     <div class="prize_bar">
                         <span class="show_pirze2">¥<em id="danjia">{{ price }}</em></span>
-
-                     </div>
-                     <div class="goods_num clearfix">
-                         <div class="num_name fl">数 量：</div>
-                            <div class="num_add fl">
-                                <input type="text" class="num_show_{{ book.bid }} fl" id="shuliang" value="1">
-                                <a href="javascript:;" class="add fr" id="jiahao">+</a>
-                                <a href="javascript:;"  class="minus fr" id="jianhao">-</a>
-				            </div>
-			            </div>
-                       <div class="total">总价：<em class="price{{  book.bid  }} " id="zongjia" >{{ price }}</em> <em>元</em></div>
-                        <div class="operate_btn" data-actions-icnt="">
-				            <a href="{% url 'index:addtocart' %}"  class="add_cart" id="add_cart">加入书单<i class="cart"></i></a>
-			            </div>
-                      </div>
+                    </div>
+                    <div class="goods_num clearfix">
+                        <div class="num_name fl">数 量：</div>
+                        <div class="num_add fl">
+                            <input type="text" class="num_show_{{ book.bid }} fl" id="shuliang" value="1">
+                            <a href="javascript:;" class="add fr" id="jiahao">+</a>
+                            <a href="javascript:;" class="minus fr" id="jianhao">-</a>
+                        </div>
+                    </div>
+                    <div class="total">总价：<em class="price{{  book.bid  }} " id="zongjia">{{ price }}</em> <em>元</em>
+                    </div>
+                    <div class="operate_btn" data-actions-icnt="">
+                        <a href="{% url 'index:addtocart' %}" class="add_cart" id="add_cart">加入书单<i
+                                class="cart"></i></a>
+                    </div>
+                </div>
 
             </form>
-      </div>
-
-
-
         </div>
 
-	</div>
 
-{#    图书展区#}
+
+    </div>
+
+    </div>
+
+    {# 图书展区#}
     <div class="product_content clearfix">
-        {#    右边主体#}
+        {# 右边主体#}
         <div id="right-content" class="main">
             <div id="buyTogether" class="group_buy" dd_name="最佳拍档">
                 <ul class="tab clearfix">
                     <li class="hover" data-type="buyTogether">书籍介绍</li>
                 </ul>
-                 <div class="over">
-                     <span>{{ book.bdesc }}</span>
+                <div class="over">
+                    <span>{{ book.bdesc }}</span>
                 </div>
                 <ul class="tab clearfix">
                     <li class="hover" data-type="buyTogether">短评</li>
                 </ul>
-            <div class="book_comment" id="comment_all" >
-                <div class="item_wrap">
-                    {% for comment in comments %}
-                    <div class="comment_items clearfix">
-                        <div class="items_right">
-                            <div class="pinglun">
-                                <span class="star_box">
-                                    <span class="star" style="width: {{ star.pop}}0%"></span>
-                                </span>
-                                <em>{{ comment.cstar }}颗星</em>
+                <div class="book_comment" id="comment_all">
+                    <div class="item_wrap">
+                        {% for comment in comments %}
+                        <div class="comment_items clearfix">
+                            <div class="items_right">
+                                <div class="pinglun">
+                                    <span class="star_box">
+                                        <span class="star" style="width: {{ star.pop}}0%"></span>
+                                    </span>
+                                    <em>{{ comment.cstar }}颗星</em>
+                                </div>
+                                <div class="describe_detail">
+                                    <span>
+                                        {{ comment.cdesc }}
+                                    </span>
+                                </div>
                             </div>
-                            <div class="describe_detail">
-                                <span>
-                                    {{ comment.cdesc }}
-                                </span>
+                            <div class="items_left_pic">
+                                <a href="" class="pic">
+                                    <img src="http://staticobs.ddimg.cn/404error/header_o.jpg">
+                                </a>
+                                <span class="name" title="">{{ uname.pop }}</span>
                             </div>
                         </div>
-                        <div class="items_left_pic">
-                            <a href="" class="pic">
-                            <img  src="http://staticobs.ddimg.cn/404error/header_o.jpg">
-                            </a>
-                            <span class="name" title="">{{ uname.pop }}</span>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% if request.session.user.islogin and bought %}
-                <form class="ui reply form" method="POST" action="#">
-                    {% csrf_token %}
-                            <select class="form-control" id="stars"  name="stars">
+                        {% endfor %}
+                        {% if request.session.user.islogin and bought %}
+                        <form class="ui reply form" method="POST" action="#">
+                            {% csrf_token %}
+                            <select class="form-control" id="stars" name="stars">
                                 <option value="1">1颗星</option>
-   			                    <option value="2">2颗星</option>
-   			                    <option value="3">3颗星</option>
-   			                    <option value="4">4颗星</option>
+                                <option value="2">2颗星</option>
+                                <option value="3">3颗星</option>
+                                <option value="4">4颗星</option>
                                 <option value="5">5颗星</option>
                             </select>
-                        <div class="field">
-                            <input name="book_id" style="display: none;" type="text" value="{{ book.bid }}">
-                            <textarea name="comment"></textarea>
+                            <div class="field">
+                                <input name="book_id" style="display: none;" type="text" value="{{ book.bid }}">
+                                <textarea name="comment"></textarea>
 
-                         </div>
+                            </div>
 
-                         <input type="submit" class="ui button" onclick="comments({{ book.bid }})" value="发送">
-                </form>
-                {% endif %}
+                            <input type="submit" class="ui button" onclick="comments({{ book.bid }})" value="发送">
+                        </form>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
             </div>
 
 
         </div>
-        {#    左侧主体#}
+        {# 左侧主体#}
         <div class="aside">
             <div id="alsoVies" class="abox">
                 <h3>同类型推荐</h3>
                 <ul class="none_b listo1 list_alsoview">
                     {% for book_other in books%}
-                        {% if book_other.bid != book.bid%}
+                    {% if book_other.bid != book.bid%}
                     <li>
-                     {% with imgl=book_other.bimg %}
+                        {% with imgl=book_other.bimg %}
                         <p class="pic">
                             <a href="{% url 'index:detail' %}?bid={{ book_other.bid }}" target="_blank">
                                 <img src="{{ imgl }}" alt="">
                             </a>
                         </p>
-                     {% endwith %}
+                        {% endwith %}
                         <p class="price">
                             <span class="price_d">¥{{ book_other.bprice }}</span>
                         </p>
                         <p class="name">
-                            <p class="pdname">{{ book_other.bname }}</p>
+                        <p class="pdname">{{ book_other.bname }}</p>
                         </p>
                         <p class="bottom_product"></p>
                     </li>
-                        {% endif %}
+                    {% endif %}
                     {% endfor %}
                 </ul>
             </div>
         </div>
     </div>
 </body>
+
 </html>

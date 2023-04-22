@@ -230,12 +230,11 @@ p#medimImgContainer{
     font-weight: normal;
 }
 .prize_bar {
-    top: 60px;
-    height: 72px;
+    top: 100px;
+    height: 62px;
     width: 100%;
     background-color: #fff5f5;
     line-height: 72px;
-    position: absolute;
 }
 .prize_bar .show_pirze {
     font-size: 15px;

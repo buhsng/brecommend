@@ -1,0 +1,14 @@
+.subject-list-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.subject-list{
+    width: 70%;
+}
+
+.subject-item{
+    width: 100%;
+}

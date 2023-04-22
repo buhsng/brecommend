@@ -13,7 +13,9 @@ urlpatterns = [
     path('cash_pay/', views.cash_payment, name='cash_pay'),     # 支付
     path('comment/',views.comment,name='comment'),              # 评论
     path('search/',views.search,name='search'),
-    path('sortall/',views.sort_all,name='sortall')
+    path('sortall/',views.sort_all,name='sortall'),
+    path('borrowed/',views.borrowHistory,name='borrowed'),
+    path('authordetail/',views.authorDetail,name='authordetail'),
 ]
 
 app_name='index'

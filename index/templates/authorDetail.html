@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>重理工图书馆</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/foot.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/header_1.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/home.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/theme_1.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+    <script src="{% static 'js/html5.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/ie6.js'%}"></script>
+    <script src="{% static 'js/jquery.js'%}"></script>
+    <script src="{% static 'js/index.js'%}"></script>
+    <meta name="referrer" content="no-referrer" />
+
+</head>
+
+<body>
+    <div class="header_con">
+        <div class="header">
+            <div class="welcome fl">欢迎来到重理工图书馆</div>
+            <div class="fr">
+                <div class="login_btn fl">
+                    {% if request.session.user.islogin %}
+                    欢迎您：<em>{{ request.session.user.username }}</em>
+                    <span>|</span>
+                    <a href="{% url 'user:logout' %}">退出</a>
+                    {% else %}
+                    <a href="{% url 'user:login' %}">登录</a>
+                    <span>|</span>
+                    <a href="{% url 'user:register' %}">注册</a>
+                    {% endif %}
+                </div>
+                <div class="user_link fl">
+                    <span>|</span>
+                    <a href="{% url 'user:personalinfo' %}">用户中心</a>
+                    <span>|</span>
+                    <a href="{% url 'index:showcart' %}">我的书单</a>
+                    <span>|</span>
+                    <a href="{% url 'index:borrowed' %}">借阅历史</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="search_bar clearfix">
+        <a href="{% url 'index:index' %}" class="logo fl">
+            <img src="https://tuibook.com/wp-content/uploads/2019/04/2019042922110096.png"></a>
+        <div class="search_con fl">
+            <form role="search" method="get" id="searchform" action="{% url 'index:search' %}">
+                <input type="search" class="input_text fl" name="search" placeholder="搜索图书">
+                <input type="submit" class="input_btn fr" name="" value="搜索">
+            </form>
+        </div>
+        <div class="guest_cart fr">
+            <a href="{% url 'index:showcart' %}" class="cart_name fl">我的书单</a>
+            <div class="goods_count fl" id="show_count">0</div>
+        </div>
+    </div>
+
+    <div class="center_con clearfix">
+        <div class="book_hot " name="图书馆首：热门作者_2" dd_name="热门作者" ddt-area="403762" ddt-floor="403762">
+            <div id="component_403762"></div>
+            <div class="tab_box_aa " id="component_map_id_403762_part_id_5238" name="m403762_pid5257_p5238" js="true"
+                itemclass="" action="hover" delay="0" speed="0" rand="0" area="1" barclass="on" updown="1" level="2">
+                <div class="head  head" ddt-area="5238" dd_name="tab头">
+                    <ul class="tab_aa">
+                        <li class="first on" type="bar"><span>作者</span></li>
+                    </ul>
+                </div>
+                <div class="tab_content_aa tab_content_aa ">
+                    <div class="content tab_1" type="item" dd_name="热门作者" style="display: block;">
+                        <div class="hot_author " name="m403762_pid5257_5244_t9099">
+                            <div class="con left" name="m403762_pid5257_5244_t9100">
+                                <div class="con introduction" name="m403762_pid5257_5244_t9101">
+                                    <ul class="list_aa " id="component_403762__5257_5244_5240__5240" ddt-area="5240"
+                                        dd_name="作者介绍">
+                                        <li class="line1 " nname="book-65152-9159_2-472762_1" ddt-pit="1" dd_name="1">
+                                            <a title="" class="img" href="{{ author.aimg }}" target="_blank">
+                                                <img src="http://img55.ddimg.cn/9002790222207455.jpg" alt=""></a>
+                                            <p class="author">
+                                                <span class="author_t"></span>
+                                                <a href="#" target="_blank">{{ author.aname }}</a>
+                                            </p>
+                                            <p class="detail">
+                                                <span class="detail_t"></span>{{ author.adesc }}
+                                            </p>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                                <div class="con zuopin" name="m403762_pid5257_5244_t9102">
+                                    <span>作品</span>
+                                </div>
+                                <div class="con author_books" name="m403762_pid5257_5244_t9103">
+                                    <ul class="list_aa " id="component_403762__5257_5244_5242__5242" ddt-area="5242"
+                                        dd_name="作者作品">
+                                        {% for book in book_author %}
+                                        <li class="line1 " nname="book-65152-9159_2-472763_1" ddt-pit="1" dd_name="1">
+                                            <a title="{{ book.bname }}" class="img" href="{% url 'index:detail' %}?bid={{ book.bid }}" target="_blank">
+                                                <img src="{{ book.bimg }}" alt="{{ book.bname }}">
+                                            </a>
+                                            <p class="name" ddt-src="29366030">
+                                                <a title="{{ book.bname }}" href="{% url 'index:detail' %}?bid={{ book.bid }}" target="_blank">{{book.bname}}</a>
+                                            </p>
+                                            <p class="star">
+                                                <span class="title"></span>
+                                                <span class="level">
+                                                    <span style="width: 94.6%;"></span>
+                                                </span>
+                                            </p>
+                                            <p class="price">
+                                                <span class="rob">
+                                                    <span class="sign">¥</span>
+                                                    <span class="num">{{ book.bprice }}</span>
+                                                </span>
+                                            </p>
+                                            <div class="icon_pop">
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+</body>
+
+</html>

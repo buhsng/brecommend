@@ -3,6 +3,18 @@ from django.utils import timezone
 from user.models import User
 
 
+# def toDict(self):
+#     dic = dict()
+#     for attr in [f.name for f in self._meta.fields]:
+#         obj = getattr(self, attr)
+#         if hasattr(obj, "toDict"):
+#             dic[attr]=obj.toDict()
+#         else:
+#             dic[attr]=obj
+#     return dic
+
+# models.Model.toDict = toDict
+
 # Create your models here.
 
 # 书本分类
@@ -102,7 +114,7 @@ class MyOrder(models.Model):
     user = models.ForeignKey(User, related_name='user_order', on_delete=models.CASCADE)  # 外键
     book = models.ForeignKey(Book, related_name='book_order', on_delete=models.CASCADE)  # 外键 商品
     allprice = models.FloatField()  # 总价
-    paydate = models.DateTimeField  # 日期
+    paydate = models.DateTimeField()  # 日期
     db_table = 'myorder'
     
     class Meta:

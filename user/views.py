@@ -40,7 +40,8 @@ def favor(request):
         favorCodes=[]
         for key in request.POST:
             if key.startswith('check'):
-                favorCodes.append(request.POST[key])
+                code = str(eval(request.POST[key])+1)
+                favorCodes.append(code)
         user = User.objects.filter(uid=thisuser.uinfo['uid'])[0]
         user.favor = favorCodes
         user.save()

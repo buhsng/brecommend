@@ -105,7 +105,7 @@ def bookdetail(request):
 
     books = Book.objects.filter(sid=book.sid)[0:3]
     bought = False
-    if userinfo:
+    if userinfo and userinfo.get("uid") is not None:
         bought = MyOrder.objects.filter(user_id=userinfo["uid"], book_id=bid).exists()
     data={
         'userinfo':userinfo,
@@ -322,3 +322,18 @@ def sort_all(request):
         'sid':sid
     }
     return render(request,'list.html',data)
+
+@login_required
+def borrowHistory(request):
+    userinfo = UserMethod(request).getUserInfo()
+    orders = MyOrder.objects.filter(user_id=userinfo["uid"])
+    data = {"orders":list(orders)}
+    return render(request,'borrowHistory.html', data)
+
+def authorDetail(request):
+    aid = request.GET['aid']
+    author = Author.objects.filter(aid=aid)[0]
+    book_author = Book.objects.filter(aid=aid).defer("bdesc")[0:4]
+    data = {'author':author,
+        'book_author':book_author}
+    return render(request,'authorDetail.html', data)
