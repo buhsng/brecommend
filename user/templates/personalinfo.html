@@ -48,7 +48,7 @@
 <div class="mydang">
         <div class="head">
             <a class="logo" href="{% url 'index:index' %}">
-                <img src="https://tuibook.com/wp-content/uploads/2019/04/2019042922110096.png" alt="">
+                <img style="width: 50px;" src="https://static-data.gaokao.cn/upload/logo/187.jpg">
             </a>
         </div>
         <div class="my_left">
@@ -68,13 +68,14 @@
                     <dd>
                         <a href="{% url 'user:eidtpwd' %}" id="a_eidpwd">修改密码</a>
                     </dd>
-                    <!-- <dd>
-                        <a href="{% url 'user:address' %}" id="a_adress">收货地址</a>
-                    </dd> -->
+                    <dd>
+                        <a href="{% url 'user:personalinfo' %}?type=wallet" id="a_wallet">钱包</a>
+                    </dd>
                 </dl>
             </div>
         </div>
         <div class="my_main">
+            {% if type == '' %}
             <div class="my_title">
                 <span class="title">个人信息</span>
             </div>
@@ -86,8 +87,29 @@
                     <dd>手机号：&nbsp;&nbsp; {{ request.session.user.phone }}</dd>
                 </dl>
             </div>
+            {% elif type == "wallet" %}
+            <div class="my_title">
+                <span class="title">我的钱包</span>
+            </div>
+            <div class="wallet_container">
+                <div class="wallet_item">
+                    <div class="wallet_item_title">押金</div>
+                    <span style="font-size:18px;margin-right:20px;margin-left:20px;">{{deposit}} 元</span>
+                    {% if deposit < 100 %}
+                    <div class="operate_btn">交押金</div>
+                    {% else %}
+                    <div class="operate_btn">退押金</div>
+                    {% endif %}
+                </div>
+                <div class="wallet_item">
+                    <div class="wallet_item_title">余额</div>
+                    <span style="font-size:18px;margin-right:20px;margin-left:20px;">{{balance}} 元</span>
+                    <div class="operate_btn">充值</div>
+                </div>
+            </div>
+            {% endif %}
         </div>
-         <div class="footer_nav_box">
+        <div class="footer_nav_box">
             <div class="footer_nav">
             <a href="#" target="_blank" rel="nofollow">公司简介</a>
             <span class="sep">|</span>
@@ -99,7 +121,7 @@
             <span class="sep">|</span>
             <a href="#" target="_blank">官方Blog</a>
         </div>
-             <div class="footer_copyright">
+            <div class="footer_copyright">
             <span>Copyright (C) 重理工图书馆 2004-2017, All Rights Reserved</span>
         </div>
         <div class="clear"></div>

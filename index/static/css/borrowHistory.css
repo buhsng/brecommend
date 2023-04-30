@@ -12,3 +12,26 @@
 .subject-item{
     width: 100%;
 }
+
+.operate_btn {
+    display: inline-block;
+    width: 88px;
+    height: 28px;
+    border: 1px solid #ff2832;
+    font-size: 14px;
+    color: #ff2832;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 3px;
+    background-color: #ffeded;
+}
+
+.operate_btn:hover{
+    background-color: #ff2832;
+    color:#ffeded;
+    cursor: pointer;
+}
+
+#returnbook_btn{
+    margin: 20px;
+}

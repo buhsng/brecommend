@@ -148,13 +148,20 @@ def personalinfo(request):
     thisuser = UserMethod(request)
     userinfo = thisuser.getUserInfo()
     thisuser = User.objects.filter(uphone=userinfo['phone']).first()
+    type = ''
     context = {'username':thisuser.uname,'email':thisuser.uemail,'sex':thisuser.usex,'thisuser':thisuser}
+    if request.GET.get('type') is not None:
+        type = request.GET.get('type')
+        if type == 'wallet':
+            context['deposit'] = 0 if thisuser.udeposit is None else thisuser.udeposit
+            context['balance'] = 0 if thisuser.ubalance is None else thisuser.ubalance
+    context['type'] = type
     return render(request,"personalinfo.html",context)
 
 # 发送验证码邮件
 def sent_email_captcha(email,random):
-    my_sender = '54800204@qq.com'  # 发件人邮箱账号
-    my_pass = 'jysiyopdxmxxbjid'  # 发件人邮箱密码
+    my_sender = '2324489588@qq.com'  # 发件人邮箱账号
+    my_pass = 'qwxeevwnrgaadhhc'  # 发件人邮箱密码
     my_user = email  # 收件人邮箱账号
 
     msg = MIMEText(random, 'plain', 'utf-8')

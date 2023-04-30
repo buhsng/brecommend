@@ -95,7 +95,7 @@
 </div>
     <div class="search_bar clearfix">
 		<a href="{% url 'index:index' %}" class="logo fl">
-            <img src="https://tuibook.com/wp-content/uploads/2019/04/2019042922110096.png"></a>
+            <img style="width: 50px;" src="https://static-data.gaokao.cn/upload/logo/187.jpg"></a>
 		<div class="sub_page_name fl">|&nbsp;&nbsp;&nbsp;&nbsp;书单</div>
 	</div>
     <div class="total_count">全部图书<em>{{ allcartnum }}</em>种</div>
@@ -103,7 +103,7 @@
 		<li class="col01">图书名称</li>
 		<li class="col02">图书定价</li>
 
-		<li class="col04">数量</li>
+		<li class="col04">天数</li>
 		<li class="col05">小计</li>
 		<li class="col06">操作</li>
 	</ul>
@@ -134,7 +134,7 @@
     <ul class="settlements">
 		<li class="col01"><input type="checkbox" id="allcheck" checked  ></li>
 		<li class="col02">全选</li>
-		<li class="col03">合计(包邮)：<span>¥</span><em id="zong">0</em> <br>共计<b id="zongshu"></b>件商品</li>
+		<li class="col03">合计：<span>¥</span><em id="zong">0</em></li>
 		<li class="col04"><a href="javascript:;" id="jiesuan" style="background-color: rgb(255, 61, 61);">确认借阅</a></li>
 	</ul>
      </form>

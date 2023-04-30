@@ -40,6 +40,7 @@ class Book(models.Model):
     aid = models.ForeignKey('Author', models.DO_NOTHING, db_column='aid')
     bdesc = models.CharField(max_length=2000, blank=True, null=True)
     bnum = models.CharField(max_length=20, blank=True, null=True)
+    bremain = models.SmallIntegerField(default=1)
 
     class Meta:
         managed = False
@@ -97,7 +98,7 @@ class Cart(models.Model):
     cid = models.AutoField(primary_key=True)          # id
     user = models.ForeignKey(User,related_name='user_cat', on_delete=models.CASCADE)  # 外键 用户
     book = models.ForeignKey(Book,related_name='book_cat', on_delete=models.CASCADE)     # 外键 商品
-    pnum = models.IntegerField()                         # 数量
+    pnum = models.IntegerField()                         # 天数
     sumprice = models.CharField(max_length=64)           # 总价格
                                                             #时间
     time = models.DateField(auto_now_add=True) # 创造时间
@@ -114,7 +115,9 @@ class MyOrder(models.Model):
     user = models.ForeignKey(User, related_name='user_order', on_delete=models.CASCADE)  # 外键
     book = models.ForeignKey(Book, related_name='book_order', on_delete=models.CASCADE)  # 外键 商品
     allprice = models.FloatField()  # 总价
+    daynum = models.IntegerField(null=False)
     paydate = models.DateTimeField()  # 日期
+    returndate = models.DateTimeField()
     db_table = 'myorder'
     
     class Meta:

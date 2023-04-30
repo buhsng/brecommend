@@ -13,6 +13,8 @@ class User(models.Model):
     uphone = models.CharField(max_length=20, blank=True, null=True)  # 手机号
     uadmin = models.IntegerField(blank=True, null=True)  # 是否管理员
     ufavorCode = models.CharField(max_length=20, blank=True, null=True)
+    udeposit = models.FloatField(default=0)
+    ubalance = models.FloatField(default=0)
     
     @property
     def favor(self):

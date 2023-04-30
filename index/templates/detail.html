@@ -101,8 +101,7 @@
         </div>
     </div>
     <div class="search_bar clearfix">
-        <a href="{% url 'index:index' %}" class="logo fl"><img
-                src="https://tuibook.com/wp-content/uploads/2019/04/2019042922110096.png"></a>
+        <a href="{% url 'index:index' %}" class="logo fl"><img style="width: 50px;" src="https://static-data.gaokao.cn/upload/logo/187.jpg"></a>
         <div class="search_con fl">
             <input type="text" class="input_text fl" name="" placeholder="搜索图书">
             <input type="button" class="input_btn fr" name="" value="搜索">
@@ -164,13 +163,15 @@
                     <div class="prize_bar">
                         <span class="show_pirze2">¥<em id="danjia">{{ price }}</em></span>
                     </div>
+                    {% if book.bremain > 0 %}
                     <div class="goods_num clearfix">
-                        <div class="num_name fl">数 量：</div>
+                        <div class="num_name fl">天 数：</div>
                         <div class="num_add fl">
                             <input type="text" class="num_show_{{ book.bid }} fl" id="shuliang" value="1">
                             <a href="javascript:;" class="add fr" id="jiahao">+</a>
                             <a href="javascript:;" class="minus fr" id="jianhao">-</a>
                         </div>
+                        <div class="num_name fl" style="margin-left:20px">库 存： {{book.bremain}}</div>
                     </div>
                     <div class="total">总价：<em class="price{{  book.bid  }} " id="zongjia">{{ price }}</em> <em>元</em>
                     </div>
@@ -178,6 +179,9 @@
                         <a href="{% url 'index:addtocart' %}" class="add_cart" id="add_cart">加入书单<i
                                 class="cart"></i></a>
                     </div>
+                    {% else %}
+                    <div>暂无库存</div>
+                    {% endif %}
                 </div>
 
             </form>

@@ -9,6 +9,7 @@ from user.models import Address
 import re
 from .recommend import recommend_user
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -241,7 +242,12 @@ def cash_payment(request):
                 cartpay.save()
         allcart = Cart.objects.filter(user_id=userinfo_id).all()
         for item in allcart:
-            order = MyOrder(user_id=userinfo_id,book_id=item.book.bid,allprice=item.book.bprice)
+            book = Book.objects.filter(bid=item.book.bid).first()
+            if book.bremain <=0:#库存不够
+                continue
+            book.bremain -= 1
+            book.save()
+            order = MyOrder(user_id=userinfo_id,book_id=item.book.bid,allprice=item.book.bprice, daynum=item.pnum, paydate=datetime.now())
             order.save()
         allcart.delete()
     return HttpResponseRedirect("/index/showcart")
