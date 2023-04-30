@@ -12,6 +12,9 @@ urlpatterns = [
     path('getaddress/', views.getaddress),
     path('editpwd/',views.editpassword,name='eidtpwd'),
     path('personalinfo/',views.personalinfo,name='personalinfo'),
+    path('paydeposit/', views.payDeposit, name='paydeposit'),
+    path('refunddeposit/', views.refundDeposit, name='refunddeposit'),
+    path('charge/', views.charge, name='charge'),
 
 ]
 

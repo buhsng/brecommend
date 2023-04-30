@@ -76,7 +76,7 @@
 
     <div class="header_con">
         <div class="header">
-            <div class="welcome fl">欢迎来到重理工图书馆</div>
+            <div class="welcome fl">欢迎来到<a href="{% url 'index:index' %}">重理工图书馆</a></div>
             <div class="fr">
                 <div class="login_btn fl">
                     {% if request.session.user.islogin %}

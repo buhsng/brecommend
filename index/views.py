@@ -176,6 +176,15 @@ def showcart(request):
         'allcartnum':allcartnum,
         'allcart':allcart
     }
+    # 只能借三本书
+    ordersNotFinished = MyOrder.objects.filter(user_id=userinfo['uid'], returndate=None)
+    data['cantBorrow']=1 if len(ordersNotFinished)>=3 else 0
+
+    # 押金, 余额
+    thisuser = User.objects.filter(uid=userinfo['uid']).first()
+    data['deposit'] = 0 if thisuser.udeposit is None else thisuser.udeposit
+    data['balance'] = 0 if thisuser.ubalance is None else thisuser.ubalance
+        
     return render(request,'ShowCart.html',data)
 
 # 添加书本
@@ -232,6 +241,7 @@ def cash_payment(request):
             PayCart.objects.filter().all().delete()
         userinfo = UserMethod(request).getUserInfo()
         userinfo_id = userinfo['uid']
+        
         cartlist = request.POST.get("cartlist")
         cartlist = cartlist.split('#')
         for list in cartlist:
@@ -335,6 +345,24 @@ def borrowHistory(request):
     orders = MyOrder.objects.filter(user_id=userinfo["uid"])
     data = {"orders":list(orders)}
     return render(request,'borrowHistory.html', data)
+
+@login_required
+def returnBook(request):
+    userinfo = UserMethod(request).getUserInfo()
+    bid = request.GET['bid']
+    order = MyOrder.objects.filter(user_id=userinfo['uid'], book_id=bid).first()
+    order.book.bremain += 1
+    order.book.save()
+    order.returndate = datetime.now()
+    diff = order.returndate-order.paydate
+    diffDays = diff.days-order.daynum
+    #超出天数，从余额扣费
+    if diffDays>0:
+        order.extraprice = diffDays*order.book.bprice
+        order.user.balance -= order.extraprice
+        order.user.save()
+    order.save()
+    return HttpResponseRedirect("/index/borrowed/")
 
 def authorDetail(request):
     aid = request.GET['aid']

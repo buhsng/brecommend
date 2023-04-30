@@ -118,6 +118,7 @@ class MyOrder(models.Model):
     daynum = models.IntegerField(null=False)
     paydate = models.DateTimeField()  # 日期
     returndate = models.DateTimeField()
+    extraprice = models.FloatField() #还书时可能产生的超时罚款
     db_table = 'myorder'
     
     class Meta:

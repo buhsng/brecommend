@@ -12,9 +12,10 @@ urlpatterns = [
     path('deletcart/', views.delcart, name='deletcart'),        # 删除书单的商品
     path('cash_pay/', views.cash_payment, name='cash_pay'),     # 支付
     path('comment/',views.comment,name='comment'),              # 评论
-    path('search/',views.search,name='search'),
-    path('sortall/',views.sort_all,name='sortall'),
-    path('borrowed/',views.borrowHistory,name='borrowed'),
+    path('search/',views.search,name='search'),                 # 搜索
+    path('sortall/',views.sort_all,name='sortall'),             # 排序
+    path('borrowed/',views.borrowHistory,name='borrowed'),      # 借阅历史
+    path('returnbook/',views.returnBook,name='returnbook'),     # 还书
     path('authordetail/',views.authorDetail,name='authordetail'),
 ]
 

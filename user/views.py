@@ -158,6 +158,41 @@ def personalinfo(request):
     context['type'] = type
     return render(request,"personalinfo.html",context)
 
+@login_required
+def payDeposit(request):
+    thisuser = UserMethod(request)
+    userinfo = thisuser.getUserInfo()
+    thisuser = User.objects.filter(uphone=userinfo['phone']).first()
+    thisuser.udeposit = 100
+    thisuser.save()
+    return HttpResponseRedirect('/user/personalinfo/?type=wallet')
+
+@login_required
+def refundDeposit(request):
+    thisuser = UserMethod(request)
+    userinfo = thisuser.getUserInfo()
+    thisuser = User.objects.filter(uphone=userinfo['phone']).first()
+    if thisuser.udeposit != 100:
+        return JsonResponse({"error": "押金不足100块"})
+    if thisuser.ubalance is None:
+        thisuser.ubalance = 0
+    thisuser.ubalance += thisuser.udeposit
+    thisuser.udeposit = 0
+    thisuser.save()
+    return HttpResponseRedirect('/user/personalinfo/?type=wallet')
+
+@login_required
+def charge(request):
+    thisuser = UserMethod(request)
+    userinfo = thisuser.getUserInfo()
+    thisuser = User.objects.filter(uphone=userinfo['phone']).first()
+    money = request.POST['money']
+    if thisuser.ubalance is None:
+        thisuser.ubalance = 0
+    thisuser.ubalance += eval(money)
+    thisuser.save()
+    return HttpResponseRedirect('/user/personalinfo/?type=wallet')
+
 # 发送验证码邮件
 def sent_email_captcha(email,random):
     my_sender = '2324489588@qq.com'  # 发件人邮箱账号
