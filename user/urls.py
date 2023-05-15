@@ -11,6 +11,7 @@ urlpatterns = [
     path('address/',views.editaddress,name='address'),
     path('getaddress/', views.getaddress),
     path('editpwd/',views.editpassword,name='eidtpwd'),
+    path('editpwd1/', views.editpwdUnlogin,name='editpwd1'),
     path('personalinfo/',views.personalinfo,name='personalinfo'),
     path('paydeposit/', views.payDeposit, name='paydeposit'),
     path('refunddeposit/', views.refundDeposit, name='refunddeposit'),

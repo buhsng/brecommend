@@ -18,10 +18,11 @@ class EmailSender:
         self.server.quit()
         
     def sendEmail(self, toEmail, msg):
+        msg = MIMEText(msg, 'plain', 'utf-8')
+        msg['From'] = formataddr(["hariki", self.email])
+        msg['To'] = formataddr(["FK", toEmail])
+        msg['Subject'] = "重理工图书馆, 还书通知"
         self.server.sendmail(self.email, [toEmail, ], msg.as_string())
-        
-    def sendEmails(self, toEmails, msg):
-        self.server.sendmail(self.email, toEmails, msg.as_string())
 
 def getNearDeadlines():
     orders = MyOrder.objects.filter(returndate=None).all()
@@ -51,15 +52,12 @@ def generateEmailMsg(deadlines):
         result[email] = msg+'、'.join(ls)+'。'
     return result
     
-def sendEmails(emailSender):
-    emailDict = generateEmailMsg(getNearDeadlines())
-    for email in emailDict:
-        emailSender.sendEmail(email, emailDict[email])
-
-if __name__=="__main__":
+def sendEmails():
     sender = EmailSender('2324489588@qq.com', 'qwxeevwnrgaadhhc')
     sender.login()
-    sendEmails(sender)
+    emailDict = generateEmailMsg(getNearDeadlines())
+    for email in emailDict:
+        sender.sendEmail(email, emailDict[email])
     sender.quit()
     
         

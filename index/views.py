@@ -178,6 +178,7 @@ def showcart(request):
     }
     # 只能借三本书
     ordersNotFinished = MyOrder.objects.filter(user_id=userinfo['uid'], returndate=None)
+    data['unreturnNum']=len(ordersNotFinished)
     data['cantBorrow']=1 if len(ordersNotFinished)>=3 else 0
 
     # 押金, 余额
@@ -251,14 +252,17 @@ def cash_payment(request):
                 cartpay = PayCart(cart_id=newcart.cid)
                 cartpay.save()
         allcart = Cart.objects.filter(user_id=userinfo_id).all()
+        user = User.objects.filter(uid=userinfo_id).first()
         for item in allcart:
             book = Book.objects.filter(bid=item.book.bid).first()
             if book.bremain <=0:#库存不够
                 continue
             book.bremain -= 1
             book.save()
-            order = MyOrder(user_id=userinfo_id,book_id=item.book.bid,allprice=item.book.bprice, daynum=item.pnum, paydate=datetime.now())
+            order = MyOrder(user_id=userinfo_id,book_id=item.book.bid,allprice=eval(item.book.bprice)*item.pnum, daynum=item.pnum, paydate=datetime.now())
+            user.ubalance -= eval(item.book.bprice)*item.pnum
             order.save()
+        user.save()
         allcart.delete()
     return HttpResponseRedirect("/index/showcart")
 
@@ -342,7 +346,8 @@ def sort_all(request):
 @login_required
 def borrowHistory(request):
     userinfo = UserMethod(request).getUserInfo()
-    orders = MyOrder.objects.filter(user_id=userinfo["uid"])
+    orders = list(MyOrder.objects.filter(user_id=userinfo["uid"]).all())
+    orders = sorted(orders, key = lambda order:order.paydate.timestamp(), reverse=True)
     data = {"orders":list(orders)}
     return render(request,'borrowHistory.html', data)
 
@@ -356,6 +361,7 @@ def returnBook(request):
     order.returndate = datetime.now()
     diff = order.returndate-order.paydate
     diffDays = diff.days-order.daynum
+    order.extraprice = 0
     #超出天数，从余额扣费
     if diffDays>0:
         order.extraprice = diffDays*order.book.bprice
@@ -371,3 +377,9 @@ def authorDetail(request):
     data = {'author':author,
         'book_author':book_author}
     return render(request,'authorDetail.html', data)
+
+
+from .autoNotify import sendEmails
+def sent_deadline_email(request):
+    sendEmails()
+    return JsonResponse({'status':'ok'})

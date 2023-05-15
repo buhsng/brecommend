@@ -209,6 +209,29 @@ def sent_email_captcha(email,random):
     server.sendmail(my_sender, [my_user, ], msg.as_string())
     server.quit()
 
+def editpwdUnlogin(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        cpatcha = request.POST.get('captcha')
+        if cpatcha is None or cpatcha=='':
+            captcha_radom = random_id(6)
+            sent_email_captcha(email, captcha_radom)
+            save_captcha = Editpwd(eid=random_id(3), email=email, captcha=captcha_radom)
+            save_captcha.save()
+            return HttpResponseRedirect("/user/editpwd1/")
+
+        newpassword = request.POST.get('newpassword')
+        if Editpwd.objects.filter(captcha=cpatcha).count() :
+            newpassword_hash = generate_password_hash(newpassword)
+            thisuser = User.objects.filter(uemail=email).first()
+            thisuser.upsw = newpassword_hash
+            thisuser.save()
+            Editpwd.objects.filter(captcha=cpatcha).delete()
+            return HttpResponseRedirect("/user/login/")
+    else:
+        return render(request, 'unloginEditpwd.html')
+
+
 # 修改密码
 @login_required
 def editpassword(request):

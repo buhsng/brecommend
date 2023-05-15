@@ -17,6 +17,7 @@ urlpatterns = [
     path('borrowed/',views.borrowHistory,name='borrowed'),      # 借阅历史
     path('returnbook/',views.returnBook,name='returnbook'),     # 还书
     path('authordetail/',views.authorDetail,name='authordetail'),
+    path('sentdeadlines/', views.sent_deadline_email, name='sentdeadlines'),
 ]
 
 app_name='index'
