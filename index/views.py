@@ -254,6 +254,8 @@ def cash_payment(request):
         allcart = Cart.objects.filter(user_id=userinfo_id).all()
         user = User.objects.filter(uid=userinfo_id).first()
         for item in allcart:
+            if str(item.cid) not in cartlist:
+                continue
             book = Book.objects.filter(bid=item.book.bid).first()
             if book.bremain <=0:#库存不够
                 continue
@@ -261,9 +263,9 @@ def cash_payment(request):
             book.save()
             order = MyOrder(user_id=userinfo_id,book_id=item.book.bid,allprice=eval(item.book.bprice)*item.pnum, daynum=item.pnum, paydate=datetime.now())
             user.ubalance -= eval(item.book.bprice)*item.pnum
+            item.delete()
             order.save()
         user.save()
-        allcart.delete()
     return HttpResponseRedirect("/index/showcart")
 
 # 评论
@@ -347,8 +349,17 @@ def sort_all(request):
 def borrowHistory(request):
     userinfo = UserMethod(request).getUserInfo()
     orders = list(MyOrder.objects.filter(user_id=userinfo["uid"]).all())
-    orders = sorted(orders, key = lambda order:order.paydate.timestamp(), reverse=True)
-    data = {"orders":list(orders)}
+    unreturns = []
+    returns = []
+    for order in orders:
+        if order.returndate is None:
+            unreturns.append(order)
+        else:
+            returns.append(order)
+    unreturns = sorted(unreturns, key = lambda order:order.paydate.timestamp(), reverse=True)
+    returns = sorted(returns, key = lambda order:order.paydate.timestamp(), reverse=True)
+    unreturns.extend(returns)
+    data = {"orders":unreturns}
     return render(request,'borrowHistory.html', data)
 
 @login_required
@@ -364,9 +375,10 @@ def returnBook(request):
     order.extraprice = 0
     #超出天数，从余额扣费
     if diffDays>0:
-        order.extraprice = diffDays*order.book.bprice
-        order.user.balance -= order.extraprice
-        order.user.save()
+        order.extraprice = diffDays*eval(order.book.bprice)
+        user = User.objects.filter(uid=order.user.uid).first()
+        user.ubalance -= order.extraprice
+        user.save()
     order.save()
     return HttpResponseRedirect("/index/borrowed/")
 
