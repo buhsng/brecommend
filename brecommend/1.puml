@@ -1,0 +1,86 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+'
+'用户-up-> (注册)
+'用户-r->(登录)
+'用户--->(修改个人信息)
+'用户-->(个人账户)
+'用户-l->(加入书单)
+'用户-l->(确认借阅)
+'(加入书单)-l->(确认借阅)#line.dotted;text:black : extend
+'(注册)-l->(输入密码)#line.dotted;text:black : <<include>>
+'(注册)->(输入用户名)#line.dotted;text:black : <<include>>
+'(注册)-u->(输入邮箱)#line.dotted;text:black : <<include>>
+'(个人账户)-r->(充值金额)
+'(个人账户)-->(充值押金)
+'(个人账户)-->(提现)
+'(充值押金)-->(退还押金)
+'(账户金额为正数)-->(退还押金)#line.dotted;text:black : extend
+'(修改个人信息)-d->(修改密码)
+'(邮箱验证码)-->(修改密码)#line.dotted;text:black : extend
+@enduml
+
+
+@startuml
+!define AWESOME https://raw.githubusercontent.com/awesomelist/plantuml-styles/master
+
+skinparam backgroundColor #FFFFFF
+skinparam monochrome true
+
+
+actor 管理员 as Admin
+
+skinparam backgroundColor #FFFFFF
+skinparam monochrome true
+
+actor 管理员 as Admin
+
+Admin -u-> (添加图书)
+Admin -left-> (编辑图书)
+Admin -r-> (删除图书)
+Admin --> (查看图书库存)
+Admin --> (更新图书库存)
+(此图书未被借出) -up-> (删除图书) : <<extend>>
+note right of (删除图书): 只有在图书库存大于0\n且无借阅记录时\n管理员才能删除图书
+@enduml
+
+@startuml
+!define AWESOME https://raw.githubusercontent.com/awesomelist/plantuml-styles/master
+
+skinparam backgroundColor #FFFFFF
+skinparam monochrome true
+
+actor User as User
+
+User -l-> (缴纳押金)
+User -u-> (退还押金)
+User -r-> (查看个人账户金额)
+User -down-> (充值账户)
+User -r-> (借阅图书)
+User --> (归还图书)
+User --> (续借图书)
+User --> (接收借阅到期邮件)
+
+(缴纳押金) -left-> (借阅图书)  #line.dotted;text:black : extend
+(借阅图书) -down-> (评分) #line.dotted;text:black : extend
+(用户无借阅图书且账户金额为正数) -right-> (退还押金)  #line.dotted;text:black : extend
+
+note bottom of (借阅图书): 用户最多可同时借阅3本图书
+@enduml
+
+
+@startuml
+!define AWESOME https://raw.githubusercontent.com/awesomelist/plantuml-styles/master
+
+skinparam backgroundColor #FFFFFF
+skinparam monochrome true
+
+actor 用户 as User
+User -l-> (选择兴趣模块)
+User --> (查看非个性化图书推荐)
+User --> (查看个性化图书推荐)
+User --> (评分借阅书籍)
+note bottom of (查看个性化图书推荐): 个性化推荐覆盖非个性化推荐
+(选择兴趣模块) ..> (查看非个性化图书推荐) : <<extend>>
+(评分借阅书籍) ..> (查看个性化图书推荐) : <<extend>>
+@enduml

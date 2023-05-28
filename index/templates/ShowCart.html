@@ -14,6 +14,36 @@
     <script src="{% static 'js/jquery.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
     <script>
+        function onInputDayNum(id){
+            let text = $("#dayNum")[0].value;
+            let dayNum = parseInt(text);
+            if(isNaN(dayNum)){
+                $("#dayNum")[0].value = 1;
+            }else{
+                $("#dayNum")[0].value = dayNum;
+                var cookieop = new cookieOperate();
+                var csrf = cookieop.getCookie('csrftoken');
+                $.ajax({
+                    url: '/index/modifybooks1/',
+                    type: 'POST',
+                    data: { 'book_id': id, 'dayNum': dayNum},
+
+                    beforeSend: function (request) {
+                        request.setRequestHeader("X-CSRFToken", csrf);
+                    },
+                    success: function (data) {
+                        // window.location = window.location;
+                        if(data.error){
+                            alert("付款价格大于书籍价格");
+                            $("#dayNum")[0] = data.oldDayNum;
+                        }
+                    },
+                    error: function (data) {
+                        alert("失败")
+                    }
+                });
+            }
+        };
         function addbooks(id) {
             var cookieop = new cookieOperate();
             var csrf = cookieop.getCookie('csrftoken');
@@ -26,7 +56,11 @@
                     request.setRequestHeader("X-CSRFToken", csrf);
                 },
                 success: function (data) {
-                    window.location = window.location;
+                    // window.location = window.location;
+                    if(data.error){
+                        alert("付款价格大于书籍价格");
+                        $("#dayNum")[0] = data.oldDayNum
+                    }
                 },
                 error: function (data) {
                     alert("失败")
@@ -45,10 +79,11 @@
                     request.setRequestHeader("X-CSRFToken", csrf);
                 },
                 success: function (data) {
-                    window.location = window.location;
+                    // window.location = window.location;
+                    console.log(data);
                 },
                 error: function (data) {
-                    alert("亲，别删光啊")
+                    alert("亲，别删光啊");
                 }
             });
         }
@@ -132,12 +167,12 @@
             <input type="hidden" name="pid[]" value="{{ cat.book.bid }}">
             <input type="hidden" class="cat_cid" value="{{ cat.cid }}">
             <li class="col02"> <img src="{{ cat.book.bimg }}"></li>
-            <li class="col03">{{ cat.book.bname}}</li>
+            <li class="col03"><a href="{% url 'index:detail' %}?bid={{ cat.book.bid }}">{{ cat.book.bname}}</a></li>
             <li class="col04">{{ cat.book.bprice }}元</li>
             <li class="col06">
                 <div class="num_add">
                     <a href="javascript:;" class="add fl" onclick="addbooks({{ cat.book.bid }})">+</a>
-                    <input type="text" class="num_show  fl" value="{{ cat.pnum }}">
+                    <input id="dayNum" type="text" class="num_show  fl" value="{{ cat.pnum }}" oninput="onInputDayNum({{ cat.book.bid }})">
                     <a href="javascript:;" class="minus fl" onclick="subbooks({{ cat.book.bid  }})">-</a>
                 </div>
             </li>

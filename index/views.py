@@ -10,11 +10,14 @@ import re
 from .recommend import recommend_user
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import datetime
+import datetime as dt
 
 # Create your views here.
 def index(request):
     thisuser = UserMethod(request)
     userinfo = thisuser.getUserInfo()
+    # [a, b] ~ [0, 12+4]
+    # [a, c] ~ [0, 12+8]
     a = random.randrange(12)
     b = a+4
     c = a+8
@@ -61,6 +64,8 @@ def index(request):
     book_author = Book.objects.filter(aid=aid).defer("bdesc")[0:4]
 
     book_new = Book.objects.order_by("btime")[a:c]
+    book_hot = Book.objects.order_by("-bnum")[a:c]
+    book_high_score = Book.objects.filter(bnum__gt=100).order_by("-bstar")[a:c]
     data = {
         'userinfo': userinfo,
         'book1s': book1s,
@@ -72,7 +77,9 @@ def index(request):
         'author':author,
         'book_author':book_author,
         'book_new':book_new,
-        'book_rec':bookrecs
+        'book_rec':bookrecs,
+        'book_hot':book_hot,
+        'book_high_score':book_high_score
     }
     return render(request, "index.html", data)
 
@@ -188,7 +195,30 @@ def showcart(request):
         
     return render(request,'ShowCart.html',data)
 
-# 添加书本
+#修改天数
+def modify_books(request):
+    if request.method == "POST":
+        userinfo = UserMethod(request).getUserInfo()
+        userinfo_id = userinfo['uid']
+        book_id = request.POST.get('book_id')
+        dayNum = request.POST.get("dayNum")
+        data = {}
+        cart = Cart.objects.filter(user_id=userinfo_id,book_id=book_id).first()
+        if cart:
+            oldPnum = cart.pnum
+            cart.pnum = int(dayNum)
+            sumprice = round(float(cart.sumprice) / oldPnum * cart.pnum, 2)
+            # 总价超过书价
+            if sumprice>cart.book.bookprice:
+                data["error"] = "overprice"
+                data["oldDayNum"] = int(oldPnum)
+            else:
+                cart.sumprice = sumprice
+                cart.save()
+            data['msg'] = '请求成功'
+            return JsonResponse(data)
+
+# 添加天数
 def add_books(request):
     if request.method =="POST":
         userinfo = UserMethod(request).getUserInfo()
@@ -197,14 +227,20 @@ def add_books(request):
         data = {}
         cart = Cart.objects.filter(user_id=userinfo_id,book_id=book_id).first()
         if cart:
-            cart.sumprice = round(float(cart.sumprice) / cart.pnum * (cart.pnum + 1 ),2)
-            cart.pnum += 1
-            cart.save()
+            sumprice = round(float(cart.sumprice) / cart.pnum * (cart.pnum + 1 ),2)
+            # 总价超过书价
+            if sumprice>cart.book.bookprice:
+                data["error"] = "overprice"
+                data["oldDayNum"] = cart.pnum
+            else:
+                cart.sumprice = sumprice
+                cart.pnum += 1
+                cart.save()
 
             data['msg'] = '请求成功'
             return JsonResponse(data)
 
-# 删除书本
+# 删除天数
 def sub_books(request):
     if request.method =="POST":
         userinfo = UserMethod(request).getUserInfo()
@@ -216,9 +252,15 @@ def sub_books(request):
             if cart.pnum == 1:
                 data['msg'] = '最少买一个'
             else:
-                cart.sumprice = round(float(cart.sumprice) / cart.pnum *(cart.pnum - 1 ),2)
-                cart.pnum -=1
-                cart.save()
+                sumprice = round(float(cart.sumprice) / cart.pnum *(cart.pnum - 1 ),2)
+                # 总价超过书价
+                if sumprice<0:
+                    data["error"] = "overprice"
+                    data["oldDayNum"] = cart.pnum
+                else:
+                    cart.sumprice = sumprice
+                    cart.pnum -=1
+                    cart.save()
                 data['msg'] = '请求成功'
                 return JsonResponse(data)
         else:
@@ -260,11 +302,12 @@ def cash_payment(request):
             if book.bremain <=0:#库存不够
                 continue
             book.bremain -= 1
-            book.save()
-            order = MyOrder(user_id=userinfo_id,book_id=item.book.bid,allprice=eval(item.book.bprice)*item.pnum, daynum=item.pnum, paydate=datetime.now())
-            user.ubalance -= eval(item.book.bprice)*item.pnum
+            book.bnum += 1
+            order = MyOrder(user_id=userinfo_id,book_id=item.book.bid,allprice=item.book.bprice*item.pnum, daynum=item.pnum, paydate=datetime.now())
+            user.ubalance -= item.book.bprice*item.pnum
             item.delete()
             order.save()
+            book.save()
         user.save()
     return HttpResponseRedirect("/index/showcart")
 
@@ -292,9 +335,7 @@ def comment(request):
         else:
             comment_id = random_id(6)
             Comment(cid=comment_id,bid=this_book,uid_id=this_user.uid,cdesc=comment_desc,cstar=comment_star).save()
-            context ={
-                'bid':book_id
-            }
+            this_book.bstar = "%.2f" % (eval(this_book.bstar) + eval(comment_star) * 2.0 / this_book.bnum)
             return JsonResponse({
                 'code':1,
                 'msg':'添加成功',
@@ -324,9 +365,21 @@ def search(request):
 
 def sort_all(request):
     userinfo = UserMethod(request).getUserInfo()
-    sid = request.GET.get('sid')
+    sid = eval(request.GET.get('sid'))
+    sortType = eval(request.GET.get('sortType'))
     page = request.GET.get('page')
-    books = Book.objects.filter(sid=sid)
+    #根据排序类型不同，来获取书籍列表
+    if sid==0:
+        if sortType==1:#根据借阅量排序（受欢迎程度）
+            books = Book.objects.order_by("-bnum")
+        elif sortType==2:#根据评价排序
+            books = Book.objects.filter(bnum__gt=100).order_by("-bstar")
+    else:
+        books = Book.objects.filter(sid=sid)    
+        if sortType==1:
+            books = books.order_by("-bnum")
+        elif sortType==2:
+            books = books.filter(bnum__gt=100).order_by("-bstar")    
     pageSize = 10
     paginator = Paginator(books, pageSize)
     total_page = paginator.count
@@ -341,46 +394,86 @@ def sort_all(request):
         'userinfo': userinfo,
         'books': book_list,
         'pages':total_page,
-        'sid':sid
+        'sid':sid,
+        'sortType':sortType
     }
     return render(request,'list.html',data)
 
 @login_required
 def borrowHistory(request):
     userinfo = UserMethod(request).getUserInfo()
+    #获取该用户所有借阅历史
     orders = list(MyOrder.objects.filter(user_id=userinfo["uid"]).all())
-    unreturns = []
-    returns = []
+    unreturns = []#保存未还的记录
+    returns = []#保存已还的记录
+    now = datetime.now()
     for order in orders:
+        #计算到期时间
+        deadline = order.paydate+dt.timedelta(days=order.daynum)
+        order.remainTime = deadline - now
         if order.returndate is None:
             unreturns.append(order)
         else:
             returns.append(order)
-    unreturns = sorted(unreturns, key = lambda order:order.paydate.timestamp(), reverse=True)
+    #按照剩余到期时间排序
+    unreturns = sorted(unreturns, key = lambda order:order.remainTime.microseconds, reverse=True)
+    #按照借阅时间排序
     returns = sorted(returns, key = lambda order:order.paydate.timestamp(), reverse=True)
+    #合并，未还在前，已还在前
     unreturns.extend(returns)
+
     data = {"orders":unreturns}
+    error =  request.GET.get("error")
+    if error and error == "nomoney":
+        data['error'] = "余额不足！请充值"
     return render(request,'borrowHistory.html', data)
 
+# 还书
 @login_required
 def returnBook(request):
     userinfo = UserMethod(request).getUserInfo()
-    bid = request.GET['bid']
-    order = MyOrder.objects.filter(user_id=userinfo['uid'], book_id=bid).first()
-    order.book.bremain += 1
-    order.book.save()
+    oid = request.GET['oid']
+    order = MyOrder.objects.filter(order_id=oid).first()
     order.returndate = datetime.now()
     diff = order.returndate-order.paydate
     diffDays = diff.days-order.daynum
     order.extraprice = 0
+
     #超出天数，从余额扣费
     if diffDays>0:
-        order.extraprice = diffDays*eval(order.book.bprice)
+        extraprice = diffDays*order.book.bprice
+        if order.allprice + extraprice >= order.book.bookprice:#超时费用加上借书时的费用已经足够买下这本书了
+            extraprice = order.book.bookprice - order.allprice #因为这本书卖给读者了，所以额外费用就是书的价格减去借书时的付款
+        else:
+            order.book.bremain += 1
+            order.book.save()
+        order.extraprice = extraprice
         user = User.objects.filter(uid=order.user.uid).first()
         user.ubalance -= order.extraprice
         user.save()
+    else:
+        order.book.bremain += 1
+        order.book.save()
     order.save()
     return HttpResponseRedirect("/index/borrowed/")
+
+@login_required
+def buyBook(request):
+    userinfo = UserMethod(request).getUserInfo()
+    oid = request.GET['oid']
+    user = User.objects.filter(uid=userinfo["uid"]).first()
+
+    order = MyOrder.objects.filter(order_id=oid).first()
+    diffPrice = order.book.bookprice - order.allprice
+    if user.ubalance < diffPrice:
+        return HttpResponseRedirect("/index/borrowed/?error=nomoney")
+    else:
+        order.returndate = datetime.now()
+        user.ubalance -= diffPrice
+        user.save()
+        order.save()
+    return HttpResponseRedirect("/index/borrowed/")
+
 
 def authorDetail(request):
     aid = request.GET['aid']

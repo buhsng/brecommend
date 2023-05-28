@@ -15,8 +15,11 @@
 <meta name="referrer" content="no-referrer" />
 <script src="{% static 'js/douban.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.raty.js' %}"></script>
-
-
+{% if error %}
+<script>
+    alert("{{error}}");
+</script>
+{% endif %}
 
 
 </head>
@@ -79,6 +82,7 @@
                         <div style="margin-left: 30px;">
                             <div style="font-size: 16px;">实付款: {{order.allprice}} 元</div>
                             <div style="font-size: 16px;">借阅时间: {{order.paydate}}</div>
+                            <div style="font-size: 16px;">到期时间: {{order.deadline}}</div>
                         </div>
                         {% if order.returndate %}
                         <div style="margin-left: 30px;">
@@ -86,7 +90,10 @@
                             <div style="font-size: 16px;">归还时间: {{order.returndate}}</div>
                         </div>
                         {% else %}
-                        <div id="returnbook_btn" class="operate_btn"><a href="{% url 'index:returnbook' %}?bid={{ order.book.bid }}">还书</a></div>
+                        <div style="margin-left: 30px;">
+                            <div id="returnbook_btn" class="operate_btn"><a href="{% url 'index:returnbook' %}?oid={{ order.order_id }}">还书</a></div>
+                            <div id="buybook_btn" class="operate_btn"><a href="{% url 'index:buybook' %}?oid={{ order.order_id }}">不想还了</a></div>
+                        </div>
                         {% endif %}
                     </div>
                     <p>{{ order.book.bdesc }}</p>

@@ -62,21 +62,32 @@
 <div class="article">
   <div id="subject_list">
 
-
-
-
+  {% if sid != 0 %}
   <div class="clearfix">
     <span class="rr greyinput">
 
+          {% if sortType == 0 %}
           综合排序
+          {% else %}
+          <a href="{% url 'index:sortall' %}?sid={{sid}}&page=1&sortType=0">综合排序</a>
+          {% endif %}
           &nbsp;/&nbsp;
 
-          <a href="/tag/%E5%B0%8F%E8%AF%B4?type=R">按出版日期排序</a>
+          {% if sortType == 1 %}
+          按人气排序
+          {% else %}
+          <a href="{% url 'index:sortall' %}?sid={{sid}}&page=1&sortType=1">按人气排序</a>
+          {% endif %}
           &nbsp;/&nbsp;
 
-          <a href="/tag/%E5%B0%8F%E8%AF%B4?type=S">按评价排序</a>
+          {% if sortType == 2 %}
+          按评价排序
+          {% else %}
+          <a href="{% url 'index:sortall' %}?sid={{sid}}&page=1&sortType=2">按评价排序</a>
+          {% endif %}
     </span>
   </div>
+  {% endif %}
 
   <ul class="subject-list">
     {% for book in books %}
@@ -99,7 +110,7 @@
   <div class="star clearfix">
         <span class="rating_nums">{{ book.bstar }}</span>
     <span class="pl">
-        ({{ book.bnum }}人评价)
+        ({{ book.bnum }}人借阅)
     </span>
   </div>
 

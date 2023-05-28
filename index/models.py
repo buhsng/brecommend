@@ -36,11 +36,12 @@ class Book(models.Model):
     bpublisher = models.CharField(max_length=20, blank=True, null=True)
     btime = models.CharField(max_length=20, blank=True, null=True)
     sid = models.ForeignKey('Sort', models.DO_NOTHING, db_column='sid')
-    bprice = models.CharField(max_length=20, blank=True, null=True)
+    bprice = models.FloatField(blank=True, null=True)
     aid = models.ForeignKey('Author', models.DO_NOTHING, db_column='aid')
     bdesc = models.CharField(max_length=2000, blank=True, null=True)
-    bnum = models.CharField(max_length=20, blank=True, null=True)
+    bnum = models.IntegerField(blank=True, null=True)
     bremain = models.SmallIntegerField(default=1)
+    bookprice = models.FloatField()
 
     class Meta:
         managed = False

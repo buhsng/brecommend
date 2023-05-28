@@ -258,7 +258,7 @@ p#medimImgContainer{
 
  }
 .goods_num .num_name {
-    width: 70px;
+    width: auto;
     height: 52px;
     line-height: 52px;
 }

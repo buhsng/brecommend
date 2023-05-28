@@ -1,3 +1,7 @@
+'''
+辅助方法，用于获取登录用户的信息
+'''
+
 class UserMethod:
     def __init__(self, request):
         self.request = request

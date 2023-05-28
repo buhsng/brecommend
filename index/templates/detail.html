@@ -154,8 +154,14 @@
                 </h1>
             </div>
             <form method="post" action="#">
-                {% csrf_token %}
                 <div class="goods_detail_list fr">
+                    <div class="star clearfix">
+                        <span class="rating_nums">{{ book.bstar }}</span>
+                    <span class="pl">
+                        ({{ book.bnum }}人借阅)
+                    </span>
+                  </div>
+                {% csrf_token %}
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                     <input type="hidden" name="pid[]" value="{{ book.bid }}">
                     <h2>{{ book.bname }}</h2>
@@ -163,6 +169,7 @@
                     <div class="prize_bar">
                         <span class="show_pirze2">¥<em id="danjia">{{ price }}</em></span>
                     </div>
+                   
                     {% if book.bremain > 0 %}
                     <div class="goods_num clearfix">
                         <div class="num_name fl">天 数：</div>
@@ -172,6 +179,7 @@
                             <a href="javascript:;" class="minus fr" id="jianhao">-</a>
                         </div>
                         <div class="num_name fl" style="margin-left:20px">库 存： {{book.bremain}}</div>
+                        <div class="num_name fl" style="margin-left:20px">书本原价： {{book.bookprice}} 元</div>
                     </div>
                     <div class="total">总价：<em class="price{{  book.bid  }} " id="zongjia">{{ price }}</em> <em>元</em>
                     </div>

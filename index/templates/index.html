@@ -70,7 +70,7 @@
                 <div class="subtitle fl">
                     <span>|</span>
                 </div>
-                <a href="#" class="goods_more fr" id="fruit_more">查看更多 ></a>
+                <!-- <a href="#" class="goods_more fr" id="fruit_more">查看更多 ></a> -->
             </div>
 
             <div class="goods_con clearfix">
@@ -90,6 +90,55 @@
 
         </div>
 
+        <div class="list_model">
+            <div class="list_title clearfix">
+                <h3 class="fl" id="model01">热门书籍</h3>
+                <div class="subtitle fl">
+                    <span>|</span>
+                </div>
+                <a href="{% url 'index:sortall' %}?sid=0&page=1&sortType=1" class="goods_more fr" id="fruit_more">查看更多 ></a>
+            </div>
+
+            <div class="goods_con clearfix">
+                <ul class="goods_list fl">
+                    <span></span>
+                    {% for book in book_hot %}
+                    <li>
+                        <h4><a href="{% url 'index:detail' %}?bid={{ book.bid }}">{{ book.bname}}</a></h4>
+                        {% with imgl=book.bimg %}
+                        <a href="{% url 'index:detail' %}?bid={{ book.bid }}"><img src="{{ imgl }}"></a>
+                        {% endwith %}
+                        <div class="prize">¥ {{ book.bprice }}</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="list_model">
+            <div class="list_title clearfix">
+                <h3 class="fl" id="model01">高分书籍</h3>
+                <div class="subtitle fl">
+                    <span>|</span>
+                </div>
+                <a href="{% url 'index:sortall' %}?sid=0&page=1&sortType=2" class="goods_more fr" id="fruit_more">查看更多 ></a>
+            </div>
+
+            <div class="goods_con clearfix">
+                <ul class="goods_list fl">
+                    <span></span>
+                    {% for book in book_high_score %}
+                    <li>
+                        <h4><a href="{% url 'index:detail' %}?bid={{ book.bid }}">{{ book.bname}}</a></h4>
+                        {% with imgl=book.bimg %}
+                        <a href="{% url 'index:detail' %}?bid={{ book.bid }}"><img src="{{ imgl }}"></a>
+                        {% endwith %}
+                        <div class="prize">¥ {{ book.bprice }}</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
 
         <div class="list_model">
             <div class="list_title clearfix">
@@ -97,7 +146,7 @@
                 <div class="subtitle fl">
                     <span>|</span>
                 </div>
-                <a href="{% url 'index:sortall' %}?sid=1&page=1" class="goods_more fr">查看更多 ></a>
+                <a href="{% url 'index:sortall' %}?sid=1&page=1&sortType=0" class="goods_more fr">查看更多 ></a>
             </div>
 
             <div class="goods_con clearfix">
@@ -124,7 +173,7 @@
                 <div class="subtitle fl">
                     <span>|</span>
                 </div>
-                <a href="{% url 'index:sortall' %}?sid=2&page=1" class="goods_more fr" id="fruit_more">查看更多 ></a>
+                <a href="{% url 'index:sortall' %}?sid=2&page=1&sortType=0" class="goods_more fr" id="fruit_more">查看更多 ></a>
             </div>
 
 
@@ -152,7 +201,7 @@
                 <div class="subtitle fl">
                     <span>|</span>
                 </div>
-                <a href="{% url 'index:sortall' %}?sid=3&page=1" class="goods_more fr" id="fruit_more">查看更多 ></a>
+                <a href="{% url 'index:sortall' %}?sid=3&page=1&sortType=0" class="goods_more fr" id="fruit_more">查看更多 ></a>
             </div>
 
 
@@ -180,7 +229,7 @@
                 <div class="subtitle fl">
                     <span>|</span>
                 </div>
-                <a href="{% url 'index:sortall' %}?sid=4&page=1" class="goods_more fr" id="fruit_more">查看更多 ></a>
+                <a href="{% url 'index:sortall' %}?sid=4&page=1&sortType=0" class="goods_more fr" id="fruit_more">查看更多 ></a>
             </div>
 
 
@@ -208,7 +257,7 @@
                 <div class="subtitle fl">
                     <span>|</span>
                 </div>
-                <a href="{% url 'index:sortall' %}?sid=5&page=1" class="goods_more fr" id="fruit_more">查看更多 ></a>
+                <a href="{% url 'index:sortall' %}?sid=5&page=1&sortType=0" class="goods_more fr" id="fruit_more">查看更多 ></a>
             </div>
 
 
@@ -236,7 +285,7 @@
                 <div class="subtitle fl">
                     <span>|</span>
                 </div>
-                <a href="{% url 'index:sortall' %}?sid=6&page=1" class="goods_more fr" id="fruit_more">查看更多 ></a>
+                <a href="{% url 'index:sortall' %}?sid=6&page=1&sortType=0" class="goods_more fr" id="fruit_more">查看更多 ></a>
             </div>
 
 
